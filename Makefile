@@ -3,7 +3,7 @@ OMPFLAGS ?= -fopenmp
 MPICC ?= mpicc
 
 .PHONY: all seq omp mpi
-all: seq omp mpi
+all: seq omp
 
 seq: build/seq
 omp: build/omp
