@@ -14,7 +14,7 @@ Complete the implementation, core measurements and written project report in one
 
 - [x] Implement shared argument validation, point-in-quarter-circle test, per-worker random generator initialization and result output in `src/common.h`.
 - [x] Implement and build `src/seq.c` as the reference mode. Use 64-bit trial and hit counts.
-- [ ] Implement `src/omp.cpp` with a private random generator per thread and a sum reduction.
+- [x] Implement `src/omp.c` with a private random generator per thread and a sum reduction.
 - [ ] Implement `src/mpi.cpp` with quotient/remainder trial partitioning and a 64-bit count reduction to rank zero.
 - [ ] Implement `src/hybrid.cpp` by combining the MPI partition with the OpenMP loop. Keep MPI calls on the main thread and check the provided thread support.
 - [ ] Resolve integration and compilation errors before starting large runs.
