@@ -145,7 +145,7 @@ def main():
                                       ('mpi', min(4, len(cpus)), 1), ('hybrid', 2, 2)]]
     jobs = [job for job in jobs if job[0] in args.stages]
     with (args.output / 'runs.jsonl').open('w') as log, (args.output / 'raw.csv').open('w', newline='') as raw:
-        writer = csv.DictWriter(raw, fieldnames=['stage', 'repetition', *FIELDS])
+        writer = csv.DictWriter(raw, fieldnames=['stage', 'repetition', *FIELDS], lineterminator='\n')
         writer.writeheader()
         for stage, config, n, seed, rep in jobs:
             env['OMP_NUM_THREADS'] = str(config[2])

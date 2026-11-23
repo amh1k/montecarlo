@@ -30,12 +30,12 @@ def summarize(directory):
         lines.append([mode, trials, seed, ranks, threads, len(times), min(times), seconds,
                       max(times), speedup, speedup / (int(ranks) * int(threads))])
     with (directory / 'scaling_summary.csv').open('w', newline='') as target:
-        writer = csv.writer(target)
+        writer = csv.writer(target, lineterminator='\n')
         writer.writerow(['mode', 'trials', 'seed', 'ranks', 'threads_per_rank', 'repetitions',
                          'min_seconds', 'median_seconds', 'max_seconds', 'speedup', 'efficiency'])
         writer.writerows(lines)
     with (directory / 'accuracy_summary.csv').open('w', newline='') as target:
-        writer = csv.writer(target)
+        writer = csv.writer(target, lineterminator='\n')
         writer.writerow(['mode', 'trials', 'ranks', 'threads_per_rank', 'seeds', 'mean_absolute_error',
                          'root_mean_squared_error', 'rmse_times_sqrt_n'])
         for (mode, trials, ranks, threads), errors in accuracy.items():
