@@ -61,6 +61,7 @@ MPI divides trials across ranks by quotient and remainder. Each rank distributes
 3. [Feasibility and constraints](documents/FEASIBILITY.md) identify the hardware, runtime and submission assumptions the team needs to verify.
 4. [Software architecture](documents/ARCHITECTURE.md) describes the components, work distribution and measurement boundaries.
 5. [Implementation plan](documents/IMPLEMENTATION_PLAN.md) sequences development, verification, benchmarking and submission.
+6. [Final report](documents/Monte-Carlo-Report.pdf) presents the implementation, measured results and limitations.
 
 ## Reproduce scaling and accuracy measurements
 
@@ -109,3 +110,19 @@ Accuracy summaries report aggregate absolute and root mean squared errors;
 individual seeds need not improve monotonically as N grows. See
 [recorded experiment notes](results/README.md) for the measured environment,
 commands and limitations. Plotting and the final report use these CSV files.
+
+## Reproduce the figures and report
+
+The [recorded data](results/2026-11-23/) contain 110 runs, including two
+10-billion-trial measurements for each of the ten scaling layouts. The
+[figures](results/figures/) show runtime, speedup, efficiency and accuracy.
+From the repository root, regenerate the figures from the recorded summaries:
+
+```sh
+python3 -m pip install 'matplotlib>=3.6' reportlab
+python3 scripts/plot_results.py results/2026-11-23 results/figures
+python3 documents/build_report.py
+```
+
+The report discusses the variability in the measured sequential baseline and
+the limits of drawing scaling conclusions from one four-core host.
