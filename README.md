@@ -52,7 +52,7 @@ make hybrid
 OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE mpiexec -n 2 ./build/hybrid 1000000 42
 ```
 
-MPI divides trials across ranks by quotient and remainder. Each rank distributes its local trials among OpenMP threads. Rank zero reports the `hybrid` mode and the actual team size. With one thread per rank, the hit count matches the MPI-only run for the same seed, trial count, and rank count.
+MPI divides trials across ranks by quotient and remainder. Each rank distributes its local trials among OpenMP threads. Every rank must use the same actual team size. Rank zero reports that team size and the `hybrid` mode. With one thread per rank, the hit count matches the MPI-only run for the same seed, trial count, and rank count.
 
 ## Project documents in reading order
 

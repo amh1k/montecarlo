@@ -30,16 +30,22 @@ int main(int argc, char *argv[]) {
 
     uint64_t trials = 0;
     uint64_t seed = 0;
-    int local_valid = parse_arguments_quiet(argc, argv, &trials, &seed);
+    int local_valid = parse_arguments_quiet(argc, argv, &trials, &seed) ? 1 : 0;
+    uint64_t root_inputs[2] = {trials, seed};
+    MPI_Bcast(root_inputs, 2, MPI_UINT64_T, 0, MPI_COMM_WORLD);
+    local_valid = local_valid && trials == root_inputs[0] && seed == root_inputs[1];
+
     int all_valid = 0;
-    MPI_Allreduce(&local_valid, &all_valid, 1, MPI_INT, MPI_MIN,
-                  MPI_COMM_WORLD);
+    MPI_Allreduce(&local_valid, &all_valid, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
     if (!all_valid) {
         if (rank == 0) {
-            fprintf(stderr, "Usage: %s TRIALS SEED\n"
-                            "TRIALS must be a positive 64-bit unsigned integer. "
-                            "SEED must be a 64-bit unsigned integer.\n",
-                    argv[0]);
+            if (local_valid) {
+                fprintf(stderr, "All MPI ranks must use the same valid trial count and seed.\n");
+            } else {
+                fprintf(stderr, "Usage: %s TRIALS SEED\n"
+                                "TRIALS must be a positive 64-bit unsigned integer. "
+                                "SEED must be a 64-bit unsigned integer.\n", argv[0]);
+            }
         }
         MPI_Finalize();
         return 1;
@@ -75,6 +81,18 @@ int main(int argc, char *argv[]) {
     double max_seconds = 0.0;
     MPI_Reduce(&local_seconds, &max_seconds, 1, MPI_DOUBLE, MPI_MAX, 0,
                MPI_COMM_WORLD);
+
+    int min_threads;
+    int max_threads;
+    MPI_Allreduce(&threads, &min_threads, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
+    MPI_Allreduce(&threads, &max_threads, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+    if (min_threads != max_threads) {
+        if (rank == 0) {
+            fprintf(stderr, "All MPI ranks must use the same OpenMP team size.\n");
+        }
+        MPI_Finalize();
+        return 1;
+    }
 
     if (rank == 0) {
         write_csv_header(stdout);
