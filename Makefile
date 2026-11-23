@@ -1,13 +1,15 @@
 CFLAGS ?= -O3 -Wall -Wextra -Wpedantic
 OMPFLAGS ?= -fopenmp
+MPICC ?= mpicc
 
-.PHONY: all seq omp mpi
-all: seq omp mpi
+.PHONY: all seq omp mpi hybrid
+all: seq omp
 
 seq: build/seq
 omp: build/omp
 
 mpi: build/mpi
+hybrid: build/hybrid
 
 build/seq: src/seq.c src/common.h Makefile | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) -std=c17 $(LDFLAGS) -o $@ $< $(LDLIBS)
@@ -16,9 +18,10 @@ build/omp: src/omp.c src/common.h Makefile | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) -std=c17 $(OMPFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 build/mpi: src/mpi.c src/common.h Makefile | build
-	$(MPICC) $(CPPFLAGS) $(CFLAGS) -std=c17 $(OMPFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
+	$(MPICC) $(CPPFLAGS) $(CFLAGS) -std=c17 $(LDFLAGS) -o $@ $< $(LDLIBS)
 
-MPICC ?= mpicc
+build/hybrid: src/hybrid.c src/common.h Makefile | build
+	$(MPICC) $(CPPFLAGS) $(CFLAGS) -std=c17 $(OMPFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 build:
 	mkdir -p $@

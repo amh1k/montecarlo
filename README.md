@@ -32,16 +32,27 @@ OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE ./build/omp 1000000 42
 
 The OpenMP mode is `omp` and uses the same arguments and CSV columns. It reports one rank and the actual number of threads in the OpenMP team. Its elapsed time includes starting the team, sampling, and summing the counts. One thread reproduces the sequential hit count for the same seed and trial count.
 
-## Build and run the MPI + OpenMP estimator
+## Build and run the MPI estimator
 
-Build with an MPI compiler wrapper and an OpenMP-capable compiler. The MPI mode requests `MPI_THREAD_FUNNELED`, checks that support is available, and keeps MPI calls on the main thread.
+Use an MPI implementation with a C compiler wrapper and a process launcher.
 
 ```sh
 make mpi
-OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE mpiexec -n 2 ./build/mpi 1000000 42
+mpiexec -n 4 ./build/mpi 1000000 42
 ```
 
-MPI divides trials across ranks by quotient and remainder. Each rank distributes its local trials among OpenMP threads and reports the actual team size. With one thread per rank, the hit count matches the MPI-only run for the same seed, trial count, and rank count.
+Rank zero reports the `mpi` mode with one thread per rank.
+
+## Build and run the MPI + OpenMP estimator
+
+Build with an MPI compiler wrapper and an OpenMP-capable compiler. The hybrid mode requests `MPI_THREAD_FUNNELED`, checks that support is available, and keeps MPI calls on the main thread.
+
+```sh
+make hybrid
+OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE mpiexec -n 2 ./build/hybrid 1000000 42
+```
+
+MPI divides trials across ranks by quotient and remainder. Each rank distributes its local trials among OpenMP threads. Rank zero reports the `hybrid` mode and the actual team size. With one thread per rank, the hit count matches the MPI-only run for the same seed, trial count, and rank count.
 
 ## Project documents in reading order
 
