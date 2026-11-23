@@ -32,6 +32,28 @@ OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE ./build/omp 1000000 42
 
 The OpenMP mode is `omp` and uses the same arguments and CSV columns. It reports one rank and the actual number of threads in the OpenMP team. Its elapsed time includes starting the team, sampling, and summing the counts. One thread reproduces the sequential hit count for the same seed and trial count.
 
+## Build and run the MPI estimator
+
+Use an MPI implementation with a C compiler wrapper and a process launcher.
+
+```sh
+make mpi
+mpiexec -n 4 ./build/mpi 1000000 42
+```
+
+Rank zero reports the `mpi` mode with one thread per rank.
+
+## Build and run the MPI + OpenMP estimator
+
+Build with an MPI compiler wrapper and an OpenMP-capable compiler. The hybrid mode requests `MPI_THREAD_FUNNELED`, checks that support is available, and keeps MPI calls on the main thread.
+
+```sh
+make hybrid
+OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE mpiexec -n 2 ./build/hybrid 1000000 42
+```
+
+MPI divides trials across ranks by quotient and remainder. Each rank distributes its local trials among OpenMP threads. Every rank must use the same actual team size. Rank zero reports that team size and the `hybrid` mode. With one thread per rank, the hit count matches the MPI-only run for the same seed, trial count, and rank count.
+
 ## Project documents in reading order
 
 1. [Original proposal](documents/PDC%20Project%20Proposal%20%E2%80%93%20Parallel%20Monte%20Carlo%20Pi%20Estimation%20%281%29.docx) records the topic, team, scope and proposed experiment.
