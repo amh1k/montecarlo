@@ -7,11 +7,7 @@
 int main(int argc, char *argv[]) {
     uint64_t trials;
     uint64_t seed;
-    if (argc != 3 || !parse_unsigned(argv[1], &trials) || trials == 0 ||
-        !parse_unsigned(argv[2], &seed)) {
-        fprintf(stderr, "Usage: %s TRIALS SEED\n"
-                        "TRIALS must be a positive 64-bit unsigned integer. "
-                        "SEED must be a 64-bit unsigned integer.\n", argv[0]);
+    if (!parse_arguments(argc, argv, &trials, &seed)) {
         return 1;
     }
 
@@ -35,6 +31,7 @@ int main(int argc, char *argv[]) {
 
     double seconds = (double)(end.tv_sec - start.tv_sec) +
                      (double)(end.tv_nsec - start.tv_nsec) / 1e9;
+    write_csv_header(stdout);
     write_result(stdout, "seq", trials, seed, 1, 1, hits, seconds);
     return 0;
 }
