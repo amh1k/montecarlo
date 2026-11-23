@@ -26,10 +26,15 @@ static inline bool parse_unsigned(const char *text, uint64_t *value) {
     return true;
 }
 
+static inline bool parse_arguments_quiet(int argc, char *argv[],
+                                         uint64_t *trials, uint64_t *seed) {
+    return argc == 3 && parse_unsigned(argv[1], trials) && *trials > 0 &&
+           parse_unsigned(argv[2], seed);
+}
+
 static inline bool parse_arguments(int argc, char *argv[], uint64_t *trials,
                                    uint64_t *seed) {
-    if (argc == 3 && parse_unsigned(argv[1], trials) && *trials > 0 &&
-        parse_unsigned(argv[2], seed)) {
+    if (parse_arguments_quiet(argc, argv, trials, seed)) {
         return true;
     }
 
