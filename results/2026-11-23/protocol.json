@@ -1,0 +1,6 @@
+{
+  "effective_scaling_repetitions": 2,
+  "reason": "User requested two repetitions; third repetition stopped. Completed third-repetition records retained separately and excluded from analysis.",
+  "accuracy_directory": "../2026-11-23-accuracy",
+  "missed_baselines": []
+}

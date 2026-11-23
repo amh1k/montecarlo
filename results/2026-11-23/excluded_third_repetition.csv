@@ -1,0 +1,2 @@
+stage,repetition,mode,trials,seed,ranks,threads_per_rank,hits,pi_estimate,seconds
+scaling,3,seq,10000000000,42,1,1,7853999959,3.1415999835999999,69.082421663000005

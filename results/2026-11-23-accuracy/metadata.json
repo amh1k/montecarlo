@@ -1,0 +1,169 @@
+{
+  "started_utc": "2026-11-23T14:27:11.790105+00:00",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "physical_cpus": [
+    0,
+    2,
+    4,
+    6
+  ],
+  "binary_sha256": {
+    "seq": "a1487aa903460a628340df2f85e531d8ed09a39b535441f5bc4a74351d340b6d",
+    "hybrid": "9b1147fb0bc453cff69bdb81e4eb4b2cdda57ac66aa21fb1d1bbf5ee2638c4a5",
+    "mpi": "2afc46439523822fe6b12e183182e7bc304d47929d6d13628a3de47ea46c2c30",
+    "omp": "f4f51b8199a5c25c091b35333b98afd2f0f21f573911ecb77375aeb3ce87cf74"
+  },
+  "configurations": [
+    [
+      "seq",
+      1,
+      1
+    ],
+    [
+      "omp",
+      1,
+      1
+    ],
+    [
+      "omp",
+      1,
+      2
+    ],
+    [
+      "omp",
+      1,
+      4
+    ],
+    [
+      "mpi",
+      1,
+      1
+    ],
+    [
+      "mpi",
+      2,
+      1
+    ],
+    [
+      "mpi",
+      4,
+      1
+    ],
+    [
+      "hybrid",
+      1,
+      4
+    ],
+    [
+      "hybrid",
+      2,
+      2
+    ],
+    [
+      "hybrid",
+      4,
+      1
+    ]
+  ],
+  "arguments": {
+    "output": "results/2026-11-23-accuracy",
+    "trials": 10000000000,
+    "pilot_trials": 10000000,
+    "repetitions": 2,
+    "stages": [
+      "accuracy"
+    ],
+    "accuracy_trials": [
+      10000,
+      100000,
+      1000000,
+      10000000
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      42
+    ],
+    "mpiexec": "/tmp/montecarlo-review-mpi/root/usr/bin/mpiexec.hydra",
+    "mpi_args": "-bind-to none",
+    "timeout": 1800
+  },
+  "invocation": [
+    "scripts/benchmark.py",
+    "--output",
+    "results/2026-11-23-accuracy",
+    "--stages",
+    "accuracy",
+    "--mpiexec",
+    "/tmp/montecarlo-review-mpi/root/usr/bin/mpiexec.hydra",
+    "--mpi-args=-bind-to none"
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/tmp/montecarlo-review-mpi/root/usr/lib/x86_64-linux-gnu"
+  },
+  "probes": [
+    {
+      "command": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "08b66342e00ed8f33a3fb9b38110b401c7a71c3d\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "returncode": 0,
+      "stdout": " M .gitignore\n M README.md\n?? documents/plans/\n?? results/\n?? scripts/\n?? tests/test_benchmark.py\n?? tests/test_summary.py\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "lscpu"
+      ],
+      "returncode": 0,
+      "stdout": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           39 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  8\nOn-line CPU(s) list:                     0-7\nVendor ID:                               GenuineIntel\nModel name:                              Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz\nCPU family:                              6\nModel:                                   142\nThread(s) per core:                      2\nCore(s) per socket:                      4\nSocket(s):                               1\nStepping:                                10\nBogoMIPS:                                4223.99\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss ht syscall nx pdpe1gb rdtscp lm arch_perfmon rep_good nopl xtopology cpuid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pdcm pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch pti ssbd ibrs ibpb stibp fsgsbase bmi1 hle avx2 smep bmi2 erms invpcid rtm rdseed adx smap clflushopt xsaveopt xsavec xgetbv1 xsaves md_clear flush_l1d arch_capabilities\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               128 KiB (4 instances)\nL1i cache:                               128 KiB (4 instances)\nL2 cache:                                1 MiB (4 instances)\nL3 cache:                                8 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-7\nVulnerability Gather data sampling:      Unknown: Dependent on hypervisor status\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Mitigation; Aligned branch/return thunks\nVulnerability Itlb multihit:             KVM: Mitigation: VMX unsupported\nVulnerability L1tf:                      Mitigation; PTE Inversion\nVulnerability Mds:                       Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Meltdown:                  Mitigation; PTI\nVulnerability Mmio stale data:           Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Mitigation; IBRS\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; IBRS; IBPB conditional; STIBP conditional; RSB filling; PBRSB-eIBRS Not affected; BHI SW loop, KVM SW loop\nVulnerability Srbds:                     Unknown: Dependent on hypervisor status\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Mitigation; Clear CPU buffers; SMT Host state unknown\nVulnerability Vmscape:                   Not affected\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "make",
+        "-Bn",
+        "seq",
+        "omp",
+        "mpi",
+        "hybrid"
+      ],
+      "returncode": 0,
+      "stdout": "mkdir -p build\ncc  -O3 -Wall -Wextra -Wpedantic -std=c17  -o build/seq src/seq.c \ncc  -O3 -Wall -Wextra -Wpedantic -std=c17 -fopenmp  -o build/omp src/omp.c \nmpicc  -O3 -Wall -Wextra -Wpedantic -std=c17  -o build/mpi src/mpi.c \nmpicc  -O3 -Wall -Wextra -Wpedantic -std=c17 -fopenmp  -o build/hybrid src/hybrid.c \n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/tmp/montecarlo-review-mpi/root/usr/bin/mpiexec.hydra",
+        "--version"
+      ],
+      "returncode": 0,
+      "stdout": "HYDRA build details:\n    Version:                                 4.3.2\n    Release Date:                            Mon Oct  6 11:14:20 AM CDT 2025\n    CC:                              gcc -Wdate-time -D_FORTIFY_SOURCE=3 -g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fdebug-prefix-map=/build/mpich-f8z5Zh/mpich-4.3.2=/usr/src/mpich-4.3.2-2 -Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro -Wl,-z,now \n    Configure options:                       '--build=x86_64-linux-gnu' '--prefix=/usr' '--includedir=${prefix}/include' '--mandir=${prefix}/share/man' '--infodir=${prefix}/share/info' '--sysconfdir=/etc' '--localstatedir=/var' '--disable-option-checking' '--disable-silent-rules' '--libdir=${prefix}/lib/x86_64-linux-gnu' '--runstatedir=/run' '--disable-maintainer-mode' '--disable-dependency-tracking' '--with-hwloc-prefix=/usr' '--with-device=ch4:ucx' 'FFLAGS=-O2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -fcf-protection -fdebug-prefix-map=/build/mpich-f8z5Zh/mpich-4.3.2=/usr/src/mpich-4.3.2-2 -fallow-invalid-boz -fallow-argument-mismatch' 'build_alias=x86_64-linux-gnu' 'CFLAGS=-g -O2 -Werror=implicit-function-declaration -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -flto=auto -ffat-lto-objects -fstack-protector-strong -fstack-clash-protection -Wformat -Werror=format-security -fcf-protection -fdebug-prefix-map=/build/mpich-f8z5Zh/mpich-4.3.2=/usr/src/mpich-4.3.2-2' 'LDFLAGS=-Wl,-Bsymbolic-functions -flto=auto -ffat-lto-objects -Wl,-z,relro -Wl,-z,now' 'CPPFLAGS=-Wdate-time -D_FORTIFY_SOURCE=3'\n    Process Manager:                         pmi\n    Launchers available:                     ssh rsh fork slurm ll lsf sge manual persist\n    Topology libraries available:            hwloc\n    Resource management kernels available:   user slurm ll lsf sge pbs cobalt\n    Demux engines available:                 poll select\n",
+      "stderr": ""
+    }
+  ],
+  "placement": "One logical CPU per physical core; disjoint contiguous slices per MPI rank; OpenMP bound to cores."
+}

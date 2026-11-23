@@ -61,3 +61,49 @@ MPI divides trials across ranks by quotient and remainder. Each rank distributes
 3. [Feasibility and constraints](documents/FEASIBILITY.md) identify the hardware, runtime and submission assumptions the team needs to verify.
 4. [Software architecture](documents/ARCHITECTURE.md) describes the components, work distribution and measurement boundaries.
 5. [Implementation plan](documents/IMPLEMENTATION_PLAN.md) sequences development, verification, benchmarking and submission.
+
+## Reproduce scaling and accuracy measurements
+
+Build all four targets first (`make seq omp mpi hybrid`), with Python 3.9+,
+Linux CPU affinity support, `taskset`, and a working MPI launcher available.
+Then run:
+
+```sh
+python3 scripts/benchmark.py --output results/my-run
+python3 scripts/summarize.py results/my-run
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+```
+
+The default experiment runs a 10-million-trial pilot for each layout, then
+two repetitions at **10 billion trials**, and an accuracy sweep at 10⁴, 10⁵,
+10⁶ and 10⁷ trials over five seeds in each mode. This takes several minutes.
+Layouts use at most four physical cores and are filtered to the host capacity.
+The runner reserves one logical CPU per physical core, assigns disjoint cores
+to ranks, and binds OpenMP threads inside each rank. It supports MPICH and
+Open MPI rank environment variables; pass `--mpiexec PATH --mpi-args='OPTIONS'`
+for launcher-specific settings. Disable launcher binding if it conflicts with
+the explicit worker affinity (MPICH: `--mpi-args='-bind-to none'`). Run on an
+otherwise idle host; no other experiment is started concurrently by the runner.
+
+For a short end-to-end check, use a **new** output directory:
+
+```sh
+python3 scripts/benchmark.py --output /tmp/mc-smoke --trials 10007 \
+  --pilot-trials 1000 --repetitions 1 --accuracy-trials 1000 --seeds 0
+```
+
+Output directories are never overwritten. `raw.csv` adds stage and repetition
+to the program CSV; `runs.jsonl` preserves exact argument lists, environment,
+stdout, stderr and wall time for every invocation. `metadata.json` records
+hardware, CPU selection, compiler, source revision and launcher. `COMPLETE` is
+created only after every requested measurement succeeds. Missing/malformed
+results and unexpected worker counts fail collection; completed earlier rows
+are retained. The 30-minute per-invocation timeout is configurable. A failed
+run must be investigated and rerun into a new directory.
+
+The summaries compare median parallel runtime with the sequential median at
+identical N and seed; efficiency divides speedup by ranks × threads per rank.
+Accuracy summaries report aggregate absolute and root mean squared errors;
+individual seeds need not improve monotonically as N grows. See
+[recorded experiment notes](results/README.md) for the measured environment,
+commands and limitations. Plotting and the final report use these CSV files.
