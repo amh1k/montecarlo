@@ -4,6 +4,14 @@
 
 #include <time.h>
 
+static int get_time(struct timespec *time) {
+#ifdef CLOCK_MONOTONIC
+    return clock_gettime(CLOCK_MONOTONIC, time);
+#else
+    return timespec_get(time, TIME_UTC) == TIME_UTC ? 0 : -1;
+#endif
+}
+
 int main(int argc, char *argv[]) {
     uint64_t trials;
     uint64_t seed;
@@ -13,8 +21,8 @@ int main(int argc, char *argv[]) {
 
     uint64_t state = worker_seed(seed, 0, 0);
     struct timespec start;
-    if (clock_gettime(CLOCK_MONOTONIC, &start) != 0) {
-        perror("clock_gettime");
+    if (get_time(&start) != 0) {
+        perror("get_time");
         return 1;
     }
 
@@ -24,8 +32,8 @@ int main(int argc, char *argv[]) {
     }
 
     struct timespec end;
-    if (clock_gettime(CLOCK_MONOTONIC, &end) != 0) {
-        perror("clock_gettime");
+    if (get_time(&end) != 0) {
+        perror("get_time");
         return 1;
     }
 
