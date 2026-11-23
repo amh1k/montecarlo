@@ -37,6 +37,34 @@ class BenchmarkTests(unittest.TestCase):
             self.assertTrue(all(r * t <= cores for _, r, t in configs))
             self.assertIn(('seq', 1, 1), configs)
 
+    def test_accuracy_selects_largest_supported_layouts(self):
+        cases = {
+            3: [('seq', 1, 1), ('omp', 1, 2), ('mpi', 2, 1)],
+            4: [('seq', 1, 1), ('omp', 1, 4), ('mpi', 4, 1), ('hybrid', 2, 2)],
+        }
+
+        def complete(config, _env, _timeout):
+            mode, ranks, threads = config
+            row = f'{mode},10,42,{ranks},{threads},8,3.2,0.001\n'
+            return subprocess.CompletedProcess(config, 0, HEADER + row, '')
+
+        for cores, expected in cases.items():
+            with self.subTest(cores=cores), tempfile.TemporaryDirectory() as temp:
+                output = Path(temp) / 'run'
+                args = ['benchmark.py', '--output', str(output), '--stages', 'accuracy',
+                        '--accuracy-trials', '10', '--seeds', '42']
+                with patch.object(b.sys, 'argv', args), \
+                     patch.object(b, 'physical_cpus', return_value=list(range(cores))), \
+                     patch.object(b.os, 'access', return_value=True), \
+                     patch.object(b.Path, 'read_bytes', return_value=b'test'), \
+                     patch.object(b, 'capture', return_value={}), \
+                     patch.object(b, 'command', side_effect=lambda config, *_: config), \
+                     patch.object(b, 'run_process', side_effect=complete) as run, \
+                     patch('sys.stdout', new=io.StringIO()):
+                    b.main()
+                self.assertTrue((output / 'COMPLETE').exists())
+                self.assertEqual([call.args[0] for call in run.call_args_list], expected)
+
     def test_worker_placement(self):
         with patch.dict(b.os.environ, {'PMI_RANK': '1', 'BENCH_CPUS': '0,2,4,6'}), \
              patch.object(b.os, 'sched_setaffinity') as affinity, patch.object(b.os, 'execv') as execute:

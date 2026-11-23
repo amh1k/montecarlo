@@ -38,6 +38,17 @@ def configurations(cpus):
     return [c for c in CONFIGS if c[1] * c[2] <= len(cpus)]
 
 
+def accuracy_configurations(configs):
+    """Choose the largest available layout per mode, preferring balanced hybrid layouts."""
+    selected = []
+    for mode in ('seq', 'omp', 'mpi', 'hybrid'):
+        layout = max((config for config in configs if config[0] == mode),
+                     key=lambda c: (c[1] * c[2], min(c[1], c[2])), default=None)
+        if layout is not None:
+            selected.append(layout)
+    return selected
+
+
 def validate(output, mode, trials, seed, ranks, threads):
     reader = csv.DictReader(io.StringIO(output))
     if reader.fieldnames != FIELDS:
@@ -140,9 +151,9 @@ def main():
                         'BENCH_CPUS': ','.join(map(str, cpus))}
     jobs = [('pilot', c, args.pilot_trials, 42, 1) for c in configs]
     jobs += [('scaling', c, args.trials, 42, rep) for rep in range(1, args.repetitions + 1) for c in configs]
+    accuracy_configs = accuracy_configurations(configs)
     jobs += [('accuracy', c, n, seed, 1) for n in args.accuracy_trials for seed in args.seeds
-             for c in configs if c in [('seq', 1, 1), ('omp', 1, min(4, len(cpus))),
-                                      ('mpi', min(4, len(cpus)), 1), ('hybrid', 2, 2)]]
+             for c in accuracy_configs]
     jobs = [job for job in jobs if job[0] in args.stages]
     with (args.output / 'runs.jsonl').open('w') as log, (args.output / 'raw.csv').open('w', newline='') as raw:
         writer = csv.DictWriter(raw, fieldnames=['stage', 'repetition', *FIELDS], lineterminator='\n')

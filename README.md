@@ -78,6 +78,8 @@ The default experiment runs a 10-million-trial pilot for each layout, then
 two repetitions at **10 billion trials**, and an accuracy sweep at 10⁴, 10⁵,
 10⁶ and 10⁷ trials over five seeds in each mode. This takes several minutes.
 Layouts use at most four physical cores and are filtered to the host capacity.
+The accuracy sweep uses the largest available OpenMP and MPI layouts. The
+hybrid layout in the default benchmark matrix needs four physical cores.
 The runner reserves one logical CPU per physical core, assigns disjoint cores
 to ranks, and binds OpenMP threads inside each rank. It supports MPICH and
 Open MPI rank environment variables; pass `--mpiexec PATH --mpi-args='OPTIONS'`
