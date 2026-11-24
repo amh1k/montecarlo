@@ -1,4 +1,4 @@
-# Monte Carlo π estimation — Roman Urdu viva guide
+# Monte Carlo π estimation — Roman Urdu project guide
 
 ## 1. Project kis problem ko solve kar raha hai?
 
